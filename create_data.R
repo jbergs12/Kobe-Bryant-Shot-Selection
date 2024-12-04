@@ -1,9 +1,12 @@
 library(vroom)
 
+vroom("dat_test")
+
 dat <- vroom("data.csv")
 View(dat)
 
-dat_test <- dat[is.na(dat$shot_made_flag), ]
+dat_test <- dat[is.na(dat$shot_made_flag), ] |> 
+  select(-shot_made_flag)
 dat_train <- dat[!is.na(dat$shot_made_flag), ]
 head(dat_test)
 
