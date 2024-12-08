@@ -18,7 +18,7 @@ kobe_rec <- recipe(shot_made_flag~., data = kobe_train) |>
   step_range(all_numeric_predictors(), min = 0, max = 1)
 
 kobe_nn <- mlp(hidden_units = tune(),
-              epochs = tune()) |> 
+              epochs = 100) |> 
   set_engine("keras") |> 
   set_mode("classification")
 
@@ -27,7 +27,6 @@ nn_wf <- workflow() |>
   add_model(kobe_nn)
 
 nn_grid <- grid_regular(hidden_units(range=c(1,15)),
-                        epochs(),
                         levels = 5)
 
 folds <- vfold_cv(kobe_train, v = 5, repeats = 1)
@@ -45,7 +44,7 @@ bestTune <- CV_results |>
   select_best(metric = "mn_log_loss")
 
 bestTune$hidden_units # 15
-bestTune$epochs
+# bestTune$epochs
 
 final_wf <- nn_wf |> 
   finalize_workflow(bestTune) |> 
